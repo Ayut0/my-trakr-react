@@ -18,6 +18,7 @@ export default function Account() {
         const newAccountName = event.target.value;
         setAccountName(newAccountName);
     }
+    
   return (
     <section>
         <form onSubmit={postAccount}>
