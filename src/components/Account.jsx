@@ -17,7 +17,7 @@ export default function Account(props) {
       .post("/accounts", { newAccount })
       .then((res) => {
         console.log("res", res);
-        setAccounts(res.data);
+        setAccounts([...accounts, {...res.data}]);
       })
       .catch((err) => console.log("err", err));
     // accounts.push(newAccount); BAD IDEA

@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 export default function Category(props) {
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState([]);
+
   const createCategory = () => {
     const newCategory = {
       id: categories.length + 1,
       name: categoryName,
     };
+    axios
+      .post("/categories", {newCategory})
+      .then((res) => {
+        console.log("res", res);
+        setCategories([...categories, {...res.data.name}])
+      })
     const newCategories = [...categories, newCategory];
     setCategories(newCategories);
   };
+
   return (
     <div>
       <label htmlFor='category'>Category:</label>
