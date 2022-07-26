@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Category from "./Category";
 
 export default function Transaction(props) {
   // const accounts = props.accounts
   // const setTransactions = props.setTransactions
   // const transactions = props.transactions
+  const radioSelect = useRef();
+  console.log(radioSelect.current);
   const [formData, setFormData] = useState({
     id: 0,
     type: "",
@@ -14,6 +16,7 @@ export default function Transaction(props) {
     accountIdFrom: 0,
     accountIdTo: 0,
   });
+  const [radio, setRadio] = useState()
   const { accounts, transactions, setTransactions } = props;
   const accountsOptions = accounts.map((account) => (
     <option value={account.id} key={account.id}>
@@ -23,6 +26,7 @@ export default function Transaction(props) {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
+    setRadio(value)
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
   };
@@ -37,10 +41,23 @@ export default function Transaction(props) {
     <section>
       <h2>New Transaction Form</h2>
       <form onSubmit={handleSubmit}>
-        <div onChange={handleChange}>
-          <input type="radio" name="type" value={"Deposit"} /> Deposit
-          <input type="radio" name="type" value={"Withdrawal"} /> Withdrawal
-          <input type="radio" name="type" value={"Transfer"} /> Transfer
+        <div onChange={handleChange} >
+          <input type="radio" name="type" value={"Deposit"} ref={radioSelect} />{" "}
+          Deposit
+          <input
+            type="radio"
+            name="type"
+            value={"Withdrawal"}
+            ref={radioSelect}
+          />{" "}
+          Withdrawal
+          <input
+            type="radio"
+            name="type"
+            value={"Transfer"}
+            ref={radioSelect}
+          />{" "}
+          Transfer
         </div>
         <div>
           <label htmlFor="accountId">Account: </label>
@@ -51,24 +68,29 @@ export default function Transaction(props) {
             {accountsOptions}
           </select>
         </div>
-        <div>
-          <label htmlFor="accountIdFrom">From:</label>
-          <select name="accountIdFrom" onChange={handleChange}>
-            <option value={""} disabled>
-              Select an account
-            </option>
-            {accountsOptions}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="accountIdTo">To:</label>
-          <select name="accountIdTo" onChange={handleChange}>
-            <option value={""} disabled>
-              Select an account
-            </option>
-            {accountsOptions}
-          </select>
-        </div>
+          {radio === "Transfer" &&
+            <div>
+              <div>
+                <label htmlFor="accountIdFrom">From:</label>
+                <select name="accountIdFrom" onChange={handleChange}>
+                  <option value={""} disabled>
+                    Select an account
+                  </option>
+                  {accountsOptions}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="accountIdTo">To:</label>
+                <select name="accountIdTo" onChange={handleChange}>
+                  <option value={""} disabled>
+                    Select an account
+                  </option>
+                  {accountsOptions}
+                </select>
+              </div>
+            </div>
+            }
+        
         <Category handleChange={handleChange} />
         <div>
           <label htmlFor="description">Description:</label>

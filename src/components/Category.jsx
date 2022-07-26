@@ -1,44 +1,49 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import AddCategory from "./AddCategory"
 
 export default function Category(props) {
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState([]);
+  const selectCategoryRef = useRef();
+
+  useEffect(() => {
+    axios.get("/categories").then((response) => {
+      console.log("data", response.data);
+      setCategories([...response.data]);
+    });
+  }, []);
 
   const createCategory = () => {
-    const newCategory = {
-      id: categories.length + 1,
-      name: categoryName,
-    };
-    axios
-      .post("/categories", {newCategory})
-      .then((res) => {
-        console.log("res", res);
-        setCategories([...categories, {...res.data.name}])
-      })
-    const newCategories = [...categories, newCategory];
-    setCategories(newCategories);
+    axios.post("/categories", { newCategory: categoryName }).then((res) => {
+      console.log("post categories", res.data);
+      setCategories([...categories, res.data]);
+    });
   };
-
+  const categoriesOptions = categories.map((category) => (
+    <option key={category.id} value={category.name}>
+      {category.name}
+    </option>
+  ));
   return (
     <div>
-      <label htmlFor='category'>Category:</label>
-      <select name='category' onChange={props.handleChange} defaultValue=''>
-        <option value=''>Select a category</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.name}>
-            {category.name}
-          </option>
-        ))}
+      <label htmlFor="category">Category:</label>
+      <select
+        name="category"
+        onChange={props.handleChange}
+        defaultValue=""
+        ref={selectCategoryRef}>
+        <option value="">Select a category</option>
+        {categoriesOptions}
+        <option value='add-new'>Add new category</option>
       </select>
-      <input
-        type='text'
-        value={categoryName}
-        onChange={(e) => setCategoryName(e.target.value)}
-      />
-      <button type='button' onClick={createCategory}>
-        Add category
-      </button>
+      {selectCategoryRef.current && selectCategoryRef.current.value === "add-new" && (
+        <AddCategory
+          categoryName={categoryName}
+          setCategoryName={setCategoryName}
+          createCategory={createCategory}
+        />
+      )}
     </div>
   );
 }
