@@ -5,8 +5,7 @@ export default function Transaction(props) {
   // const accounts = props.accounts
   // const setTransactions = props.setTransactions
   // const transactions = props.transactions
-  const radioSelect = useRef();
-  console.log(radioSelect.current);
+  let radioSelect = useRef("Deposit");
   const [formData, setFormData] = useState({
     id: 0,
     type: "",
@@ -16,7 +15,6 @@ export default function Transaction(props) {
     accountIdFrom: 0,
     accountIdTo: 0,
   });
-  const [radio, setRadio] = useState()
   const { accounts, transactions, setTransactions } = props;
   const accountsOptions = accounts.map((account) => (
     <option value={account.id} key={account.id}>
@@ -26,7 +24,8 @@ export default function Transaction(props) {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setRadio(value)
+    radioSelect.current = event.target;
+    console.log(radioSelect.current);
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
   };
@@ -68,7 +67,7 @@ export default function Transaction(props) {
             {accountsOptions}
           </select>
         </div>
-          {radio === "Transfer" &&
+          {radioSelect.current.value === "Transfer" &&
             <div>
               <div>
                 <label htmlFor="accountIdFrom">From:</label>
